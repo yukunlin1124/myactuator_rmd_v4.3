@@ -156,3 +156,5 @@ Finally you can **launch all the tests** with the following command:
 ```bash
 $ ctest
 ```
+## 5. Example scripts
+Example usecase inside my_example
