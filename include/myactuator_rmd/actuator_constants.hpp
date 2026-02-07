@@ -90,6 +90,39 @@ namespace myactuator_rmd {
       static constexpr std::int16_t number_of_pole_pairs {14};
   };
 
+  /**\class X4_10
+   * \brief
+   *    Constants for the X4-10 actuator
+   *    See https://www.myactuator.com/x4-10details
+  */
+  class X4_10 {
+    public:
+      static constexpr float reducer_ratio {12.6};
+      static constexpr float no_load_speed {317}; // in rpm (@24V)
+      static constexpr float rated_speed {238}; // in rpm
+      static constexpr float rated_current {11}; // in A
+      static constexpr float rated_power {100}; // in W
+      static constexpr float rated_torque {4}; // in Nm
+      static constexpr float torque_constant {0.4675}; // in Nm/A
+      static constexpr float rotor_inertia {250}; // in gcm2
+  };
+
+    /**\class X4_36
+   * \brief
+   *    Constants for the X4-36 actuator
+   *    See https://www.myactuator.com/x4-36details
+  */
+  class X4_36 {
+    public:
+      static constexpr float reducer_ratio {36};
+      static constexpr float no_load_speed {111}; // in rpm (@24V)
+      static constexpr float rated_speed {83}; // in rpm
+      static constexpr float rated_current {8.625}; // in A
+      static constexpr float rated_power {100}; // in W
+      static constexpr float rated_torque {10.5}; // in Nm
+      static constexpr float torque_constant {1.2}; // in Nm/A
+      static constexpr float rotor_inertia {300}; // in gcm2
+  };
 
   ///< X6-series actuators
 
@@ -203,6 +236,22 @@ namespace myactuator_rmd {
       static constexpr std::int16_t number_of_pole_pairs {14};
   };
 
+  /**\class X6_60
+   * \brief
+   *    Constants for the X6-60 actuator
+   *    See https://www.myactuator.com/x6-60details
+  */
+  class X6_60 {
+    public:
+      static constexpr float reducer_ratio {19.612};
+      static constexpr float no_load_speed {176}; // in rpm (@48V)
+      static constexpr float rated_speed {153}; // in rpm
+      static constexpr float rated_current {13.4}; // in A
+      static constexpr float rated_power {320}; // in W
+      static constexpr float rated_torque {20}; // in Nm
+      static constexpr float torque_constant {1.5}; // in Nm/A
+      static constexpr float rotor_inertia {660}; // in gcm2
+  };
 
   ///< X8-series actuators
 
@@ -367,6 +416,23 @@ namespace myactuator_rmd {
       static constexpr float torque_constant {rated_torque/rated_current}; // (2.5) in Nm/A
       static constexpr float rotor_inertia {26000}; // in gcm2
       static constexpr std::int16_t number_of_pole_pairs {21};
+  };
+
+  /**\class X8_120
+   * \brief
+   *    Constants for the X8-120 actuator
+   *    See https://www.myactuator.com/x8-120details
+  */
+  class X8_120 {
+    public:
+      static constexpr float reducer_ratio {19.612};
+      static constexpr float no_load_speed {158}; // in rpm (@48V)
+      static constexpr float rated_speed {127}; // in rpm
+      static constexpr float rated_current {24.88}; // in A
+      static constexpr float rated_power {574}; // in W
+      static constexpr float rated_torque {43}; // in Nm
+      static constexpr float torque_constant {2.0}; // in Nm/A
+      static constexpr float rotor_inertia {1500}; // in gcm2
   };
 
 

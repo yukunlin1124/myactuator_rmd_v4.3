@@ -16,6 +16,13 @@
 #include "myactuator_rmd/protocol/responses.hpp"
 #include "myactuator_rmd/exceptions.hpp"
 
+#include "myactuator_rmd/protocol/single_gain_request.hpp"
+#include "myactuator_rmd/protocol/single_gain_response.hpp"
+#include "myactuator_rmd/protocol/function_control_request.hpp"
+#include "myactuator_rmd/protocol/function_control_response.hpp"
+#include "myactuator_rmd/driver/can_address_offset.hpp"
+#include "myactuator_rmd/protocol/motion_control_request.hpp"
+#include "myactuator_rmd/protocol/motion_control_response.hpp"
 
 namespace myactuator_rmd {
 
@@ -36,6 +43,52 @@ namespace myactuator_rmd {
     GetCanIdResponse const response {driver_.sendRecv(request, actuator_id_)};
     return response.getCanId();
   }
+
+  // --- edit ---
+  float ActuatorInterface::getSingleGain(GainType const gain_type) {
+    GetSingleControllerGainRequest const request {gain_type};
+    GetSingleControllerGainResponse const response {driver_.sendRecv(request, actuator_id_)};
+    return response.getValue();
+  }
+
+  float ActuatorInterface::setSingleGain(GainType const gain_type, float const value) {
+      SetSingleControllerGainRequest const request {gain_type, value};
+      SetSingleControllerGainResponse const response {driver_.sendRecv(request, actuator_id_)};
+      return response.getValue();
+  }
+
+  float ActuatorInterface::setSingleGainPersistently(GainType const gain_type, float const value) {
+      SetSingleControllerGainPersistentlyRequest const request {gain_type, value};
+      SetSingleControllerGainPersistentlyResponse const response {driver_.sendRecv(request, actuator_id_)};
+      return response.getValue();
+  }
+
+  std::uint32_t ActuatorInterface::functionControl(FunctionControlType const function_type, std::uint32_t const value) {
+    SetFunctionControlRequest const request {function_type, value};
+
+    if (function_type == FunctionControlType::SET_CANID) { 
+      driver_.send(request, actuator_id_);
+      return value;
+    }
+    SetFunctionControlResponse const response {driver_.sendRecv(request, actuator_id_)};
+    return response.getValue();
+  }
+
+  MotionControlStatus ActuatorInterface::motionControl(float const p_des, float const v_des, float const kp, float const kd, float const t_ff) {
+    MotionControlRequest const request {p_des, v_des, kp, kd, t_ff};
+    auto const response_data = driver_.sendRecv(request, 
+                                                actuator_id_, 
+                                                CanAddressOffset::request_motion_control, 
+                                                CanAddressOffset::response_motion_control);
+    MotionControlResponse const response {response_data};
+    return MotionControlStatus {
+      response.getEchoCanId(),   
+      response.getPosition(),    
+      response.getVelocity(),   
+      response.getTorque()
+    };
+  }
+  // ---------------------
 
   Gains ActuatorInterface::getControllerGains() {
     GetControllerGainsRequest const request {};

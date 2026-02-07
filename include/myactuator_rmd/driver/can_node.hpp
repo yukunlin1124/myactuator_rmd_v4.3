@@ -21,6 +21,7 @@
 #include "myactuator_rmd/protocol/message.hpp"
 #include "myactuator_rmd/exceptions.hpp"
 
+#include "myactuator_rmd/driver/can_address_offset.hpp"
 
 namespace myactuator_rmd {
 
@@ -66,6 +67,14 @@ namespace myactuator_rmd {
       */
       inline void send(Message const& msg, std::uint32_t const actuator_id) override;
 
+      // --- edit ---
+      /**\fn send
+       * \brief
+       * OVERLOAD: Writes a given CAN frame using a CUSTOM base offset
+      */
+      inline void send(Message const& msg, std::uint32_t const actuator_id, std::uint32_t const base_offset) override;
+      // -----------------------------------------------------------------------
+
       /**\fn sendRecv
        * \brief
        *    Writes a given CAN frame based on the request to the actuator with the corresponding id
@@ -80,6 +89,15 @@ namespace myactuator_rmd {
       */
       [[nodiscard]]
       inline std::array<std::uint8_t,8> sendRecv(Message const& request, std::uint32_t const actuator_id) override;
+
+      // --- edit ---
+      /**\fn sendRecv
+       * \brief
+       * OVERLOAD: Sends with CUSTOM request offset and waits for CUSTOM response offset
+      */
+      [[nodiscard]]
+      inline std::array<std::uint8_t,8> sendRecv(Message const& request, std::uint32_t const actuator_id, std::uint32_t const request_offset, std::uint32_t const response_offset) override;
+      // -----------------------------------------------------------------------
 
     protected:
       /**\fn getCanSendId
@@ -124,6 +142,9 @@ namespace myactuator_rmd {
     std::vector<std::uint32_t> can_receive_ids {};
     for (auto const& id: actuator_ids_){
       can_receive_ids.emplace_back(getCanReceiveId(id));
+      // --- edit ---
+      can_receive_ids.emplace_back(CanAddressOffset::response_motion_control + id);
+      // -----------------------------------------------------------------------
     }
     setRecvFilter(can_receive_ids);
     return;
@@ -144,6 +165,23 @@ namespace myactuator_rmd {
     return frame.getData();
   }
 
+  // --- edit ---
+  template <std::uint32_t SEND_ID_OFFSET, std::uint32_t RECEIVE_ID_OFFSET>
+  void CanNode<SEND_ID_OFFSET,RECEIVE_ID_OFFSET>::send(Message const& msg, std::uint32_t const actuator_id, std::uint32_t const base_offset) {
+    auto const can_send_id = base_offset + actuator_id;
+    write(can_send_id, msg.getData());
+    return;
+  }
+
+  template <std::uint32_t SEND_ID_OFFSET, std::uint32_t RECEIVE_ID_OFFSET>
+  std::array<std::uint8_t,8> CanNode<SEND_ID_OFFSET,RECEIVE_ID_OFFSET>::sendRecv(Message const& request, std::uint32_t const actuator_id, std::uint32_t const request_offset, std::uint32_t const response_offset) {
+    auto const can_send_id = request_offset + actuator_id;
+    write(can_send_id, request.getData());
+    can::Frame const frame {can::Node::read()};
+    return frame.getData();
+  }
+  // -----------------------------------------------------------------------
+  
   template <std::uint32_t SEND_ID_OFFSET, std::uint32_t RECEIVE_ID_OFFSET>
   constexpr std::uint32_t CanNode<SEND_ID_OFFSET,RECEIVE_ID_OFFSET>::getCanSendId(std::uint32_t const actuator_id) noexcept {
     return SEND_ID_OFFSET + actuator_id;

@@ -24,6 +24,9 @@
 #include "myactuator_rmd/actuator_state/motor_status_3.hpp"
 #include "myactuator_rmd/driver/driver.hpp"
 
+#include "myactuator_rmd/actuator_state/gain_type.hpp"
+#include "myactuator_rmd/actuator_state/function_control_type.hpp"
+#include "myactuator_rmd/actuator_state/motion_control_status.hpp"
 
 namespace myactuator_rmd {
 
@@ -78,6 +81,63 @@ namespace myactuator_rmd {
       */
       [[nodiscard]]
       Gains getControllerGains();
+
+      // edited
+      /**\fn getSingleGain
+       * \brief
+       *    Reads the desired gain value (Protocol V4.3)
+       * \returns 
+       *   The gain value as float
+      */
+      [[nodiscard]]
+      float getSingleGain(GainType const gain_type);
+
+      /**\fn setSingleGain
+       * \brief
+       *    Sets the desired gain value (Protocol V4.3)
+       * \param[in] gain_type
+       *    The type of gain to set
+       * \param[in] value
+       *    The gain value to set as float
+      */
+     [[nodiscard]]
+      float setSingleGain(GainType const gain_type, float const value);
+
+      /**\fn setSingleGainPersistently
+       * \brief
+       *    Sets the desired gain value persistently (Protocol V4.3)
+       * \param[in] gain_type
+       *    The type of gain to set
+       * \param[in] value
+       *    The gain value to set as float
+      */
+     [[nodiscard]]
+      float setSingleGainPersistently(GainType const gain_type, float const value);
+
+      /**\fn functionControl
+       * \brief
+       * Send a function control command (Integer based)
+       * * \param[in] function_type
+       * The specific function index to control
+       * \param[in] value
+       * The integer value to set (hex/uint32)
+       * \return 
+       * The confirmed value from the motor
+      */
+      [[nodiscard]]
+      std::uint32_t functionControl(FunctionControlType const function_type, std::uint32_t const value);
+
+      /**\fn motionControl
+       * \brief Control the motor using the mixed motion control command (0x400)
+       * \param[in] p_des Desired Position [-12.5, 12.5] rad
+       * \param[in] v_des Desired Velocity [-45.0, 45.0] rad/s
+       * \param[in] kp Position Gain [0, 500]
+       * \param[in] kd Velocity Gain [0, 5]
+       * \param[in] t_ff Feedforward Torque [-24.0, 24.0] Nm
+       * \return The echoed status (position, velocity, torque) from the motor
+       */
+      MotionControlStatus motionControl(float const p_des, float const v_des, float const kp, float const kd, float const t_ff);
+      // ---------------------
 
       /**\fn getControlMode
        * \brief

@@ -47,6 +47,16 @@ namespace myactuator_rmd {
       */
       virtual void send(Message const& msg, std::uint32_t const actuator_id) = 0;
 
+      // --- edit ---
+      /**\fn send
+       * \brief
+       * Overload: Writes data using a CUSTOM base offset
+       * * \param[in] base_offset
+       * The custom CAN ID offset (e.g. 0x400)
+      */
+      virtual void send(Message const& msg, std::uint32_t const actuator_id, std::uint32_t const base_offset) = 0;
+      // ---------------------------
+
       /**\fn sendRecv
        * \brief
        *    Writes the given data to the actuator with the corresponding id and waits for a corresponding reply
@@ -60,6 +70,19 @@ namespace myactuator_rmd {
       */
       [[nodiscard]]
       virtual std::array<std::uint8_t,8> sendRecv(Message const& request, std::uint32_t const actuator_id) = 0;
+
+      // --- edit ---
+      /**\fn sendRecv
+       * \brief
+       * Overload: Sends with CUSTOM request offset and waits for CUSTOM response offset
+       * * \param[in] request_offset
+       * The send ID base (e.g. 0x400)
+       * \param[in] response_offset
+       * The expected reply ID base (e.g. 0x500)
+      */
+      [[nodiscard]]
+      virtual std::array<std::uint8_t,8> sendRecv(Message const& request, std::uint32_t const actuator_id, std::uint32_t const request_offset, std::uint32_t const response_offset) = 0;
+      // -----------------------------------------------------------------------
 
     protected:
       Driver() = default;

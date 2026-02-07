@@ -1,17 +1,16 @@
 # MyActuator RMD X-series CAN driver SDK
 
 Author: [Tobit Flatscher](https://github.com/2b-t) (2023 - 2024)
+Author: [yukunlin1124](https://github.com/yukunlin1124) (2026)
 
 [![Tests](https://github.com/2b-t/myactuator_rmd/actions/workflows/run-tests.yml/badge.svg)](https://github.com/2b-t/myactuator_rmd/actions/workflows/run-tests.yml) [![codecov](https://codecov.io/gh/2b-t/myactuator_rmd/graph/badge.svg?token=VSDNKL4G4W)](https://codecov.io/gh/2b-t/myactuator_rmd) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ab6c938baaac477e98c69cdf84d61420)](https://app.codacy.com/gh/2b-t/myactuator_rmd/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade) [![C++17 Standard](https://img.shields.io/badge/Standard-C++17-yellow.svg?style=flat&logo=c%2B%2B)](https://isocpp.org/std/the-standard) [![Python 3](https://img.shields.io/badge/Python-3-yellow.svg?style=flat&logo=python)](https://www.python.org/downloads/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
 
 ## 0. Overview
-This repository holds a **CAN driver software development kit** (SDK) for the [**MyActuator RMD X actuator series**](https://www.myactuator.com/rmd-x) written in modern C++17 using [Linux's SocketCAN](https://docs.kernel.org/networking/can.html). The driver SDK is also exposed to Python through Python bindings generated with [pybind11](https://github.com/pybind/pybind11).
+This repository holds a modified **CAN driver software development kit** (SDK) for the [**MyActuator RMD V4 actuator series**](https://www.myactuator.com/rmd-x) written in modern C++17 using [Linux's SocketCAN](https://docs.kernel.org/networking/can.html) and base on **protocol V4.3**. The driver SDK is also exposed to Python through Python bindings generated with [pybind11](https://github.com/pybind/pybind11).
 
-For the [`ros2_control` integration](https://control.ros.org/humble/index.html) please refer to [this repository](https://github.com/2b-t/myactuator_rmd_ros).
-
-
+For the original **CAN driver software development kit** (SDK) for the [**MyActuator RMD X actuator series**] which base on **protocol V3.8** please refer to [this repository](https://github.com/2b-t/myactuator_rmd.git).
 
 ## 1. Installation
 
@@ -25,7 +24,7 @@ $ sudo apt-get install -y can-utils iproute2 linux-modules-extra-$(uname -r)
 In case you want to use the Python bindings you will have to additionally install [Python 3](https://www.python.org/downloads/), [pip](https://pypi.org/project/pip/) and [pybind11](https://pybind11.readthedocs.io/en/stable/):
 
 ```bash
-$ sudo apt-get install -y python3 python3-pip python3-pybind11 python3-setuptools
+$ sudo apt-get install -y python3 python3-pip python3-pybind11
 ```
 
 After having installed its dependencies you will have to install the driver SDK either as a C++ library or Python package as described in the following steps. Both will use CMake to compile the C++ code.
@@ -34,7 +33,7 @@ After having installed its dependencies you will have to install the driver SDK 
 
 ### 1.1 Building the C++ library
 
-For **building the C++ driver SDK** open a new terminal inside this folder and execute the following commands. On older versions of Linux the build might fail with the error message `error: 'const struct can_frame' has no member named 'len'` and you will have to apply the code modification discussed in [issue #5](https://github.com/2b-t/myactuator_rmd/issues/5).
+For **building the C++ driver SDK** open a new terminal inside this folder and execute the following commands
 
 ```bash
 $ mkdir build
@@ -85,12 +84,7 @@ find_package(myactuator_rmd REQUIRED)
 add_executable(your_node
   src/main.cpp
 )
-target_compile_features(your_node PUBLIC
-  cxx_std_17
-)
-target_link_libraries(your_node PUBLIC
-  myactuator_rmd::myactuator_rmd
-)
+target_link_libraries(your_node PUBLIC myactuator_rmd::myactuator_rmd)
 ```
 
 A minimal example for the `main.cpp` can be found below:
