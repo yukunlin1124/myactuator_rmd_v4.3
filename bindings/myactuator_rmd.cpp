@@ -79,10 +79,6 @@ PYBIND11_MODULE(myactuator_rmd_py, m) {
     .def("getControllerGains", &myactuator_rmd::ActuatorInterface::getControllerGains)
     // --- edit ---
     .def("getSingleGain", &myactuator_rmd::ActuatorInterface::getSingleGain)
-    .def("setSingleGain", &myactuator_rmd::ActuatorInterface::setSingleGain)
-    .def("setSingleGainPersistently", &myactuator_rmd::ActuatorInterface::setSingleGainPersistently)
-    .def("functionControl", &myactuator_rmd::ActuatorInterface::functionControl)
-    .def("motionControl", &myactuator_rmd::ActuatorInterface::motionControl)
     // ---------------------
     .def("getControlMode", &myactuator_rmd::ActuatorInterface::getControlMode)
     .def("getMotorModel", &myactuator_rmd::ActuatorInterface::getMotorModel)
@@ -105,6 +101,9 @@ PYBIND11_MODULE(myactuator_rmd_py, m) {
     .def("sendPositionAbsoluteSetpoint", &myactuator_rmd::ActuatorInterface::sendPositionAbsoluteSetpoint)
     .def("sendTorqueSetpoint", &myactuator_rmd::ActuatorInterface::sendTorqueSetpoint)
     .def("sendVelocitySetpoint", &myactuator_rmd::ActuatorInterface::sendVelocitySetpoint)
+// --- edit ---
+    .def("sendMotionModeSetpoint", &myactuator_rmd::ActuatorInterface::sendMotionModeSetpoint)
+// ---------------------
     .def("setAcceleration", &myactuator_rmd::ActuatorInterface::setAcceleration)
     .def("setCanBaudRate", &myactuator_rmd::ActuatorInterface::setCanBaudRate)
     .def("setCanId", &myactuator_rmd::ActuatorInterface::setCanId)
@@ -112,6 +111,11 @@ PYBIND11_MODULE(myactuator_rmd_py, m) {
     .def("setCurrentPositionAsEncoderZero", &myactuator_rmd::ActuatorInterface::setCurrentPositionAsEncoderZero)
     .def("setEncoderZero", &myactuator_rmd::ActuatorInterface::setEncoderZero)
     .def("setTimeout", &myactuator_rmd::ActuatorInterface::setTimeout)
+    // --- edit ---
+    .def("setSingleGain", &myactuator_rmd::ActuatorInterface::setSingleGain)
+    .def("setSingleGainPersistently", &myactuator_rmd::ActuatorInterface::setSingleGainPersistently)
+    .def("functionControl", &myactuator_rmd::ActuatorInterface::functionControl)
+    // ---------------------
     .def("shutdownMotor", &myactuator_rmd::ActuatorInterface::shutdownMotor)
     .def("stopMotor", &myactuator_rmd::ActuatorInterface::stopMotor);
   pybind11::register_exception<myactuator_rmd::Exception>(m, "ActuatorException");
@@ -119,7 +123,7 @@ PYBIND11_MODULE(myactuator_rmd_py, m) {
   pybind11::register_exception<myactuator_rmd::ValueRangeException>(m, "ValueRangeException");
 
   auto m_actuator_state = m.def_submodule("actuator_state", "Submodule for actuator state structures");
-  // --- edit ---
+// --- edit ---
   pybind11::enum_<myactuator_rmd::GainType>(m_actuator_state, "GainType")
     .value("CURRENT_LOOP_KP", myactuator_rmd::GainType::CURRENT_LOOP_KP)
     .value("CURRENT_LOOP_KI", myactuator_rmd::GainType::CURRENT_LOOP_KI)
@@ -147,7 +151,7 @@ PYBIND11_MODULE(myactuator_rmd_py, m) {
       ss << motion_control_status;
       return ss.str();
     });
-  // ----------------------
+// ----------------------
   pybind11::enum_<myactuator_rmd::AccelerationType>(m_actuator_state, "AccelerationType")
     .value("POSITION_PLANNING_ACCELERATION", myactuator_rmd::AccelerationType::POSITION_PLANNING_ACCELERATION)
     .value("POSITION_PLANNING_DECELERATION", myactuator_rmd::AccelerationType::POSITION_PLANNING_DECELERATION)
@@ -251,12 +255,12 @@ PYBIND11_MODULE(myactuator_rmd_py, m) {
   pybind11::register_exception<myactuator_rmd::can::ControllerRestartedError>(m_can, "ControllerRestartedError");
 
   auto m_actuator_constants = m.def_submodule("actuator_constants", "Submodule for actuator constants");
-  // edit
+// edit
   myactuator_rmd::bindings::declareActuator<myactuator_rmd::X8_120>(m_actuator_constants,   "X8_120");
   myactuator_rmd::bindings::declareActuator<myactuator_rmd::X6_60>(m_actuator_constants,    "X6_60");
   myactuator_rmd::bindings::declareActuator<myactuator_rmd::X4_36>(m_actuator_constants,    "X4_36");
   myactuator_rmd::bindings::declareActuator<myactuator_rmd::X4_10>(m_actuator_constants,    "X4_10");
-  //
+//
   myactuator_rmd::bindings::declareActuator<myactuator_rmd::X4V2>(m_actuator_constants,     "X4V2");
   myactuator_rmd::bindings::declareActuator<myactuator_rmd::X4V3>(m_actuator_constants,     "X4V3");
   myactuator_rmd::bindings::declareActuator<myactuator_rmd::X4_3>(m_actuator_constants,     "X4_3");

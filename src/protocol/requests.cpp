@@ -1,4 +1,5 @@
 #include "myactuator_rmd/protocol/requests.hpp"
+#include "myactuator_rmd/protocol/motion_control_request.hpp"  // New motion control method for protocol v4.3
 
 #include <chrono>
 #include <cstdint>
@@ -122,4 +123,38 @@ namespace myactuator_rmd {
     return static_cast<float>(getAs<std::int32_t>(4))/100.0f;
   }
 
+
+  // --- edit ---
+  // helper function for motion mode
+  static constexpr std::uint16_t float_to_uint(float const x, float const x_min, float const x_max, int const bits) noexcept {
+    float const span = x_max - x_min;
+    float p = (x - x_min) / span;
+    if (p < 0.0f) p = 0.0f;
+    if (p > 1.0f) p = 1.0f;
+    return static_cast<std::uint16_t>(p * ((1 << bits) - 1));
+  }
+
+  SetMotionModeRequest::SetMotionModeRequest(float const p_des, float const v_des, float const kp, float const kd, float const t_ff)
+  : Message{} {
+    
+    // Convert floats to the required integer resolutions
+    std::uint16_t const p_int = float_to_uint(p_des, -12.5f, 12.5f, 16);
+    std::uint16_t const v_int = float_to_uint(v_des, -45.0f, 45.0f, 12);
+    std::uint16_t const kp_int = float_to_uint(kp, 0.0f, 500.0f, 12);
+    std::uint16_t const kd_int = float_to_uint(kd, 0.0f, 5.0f, 12);
+    std::uint16_t const t_int = float_to_uint(t_ff, -24.0f, 24.0f, 12);
+
+    // Pack the bits into the 8-byte payload array (data_)
+    // Note: Because 12-bit values cross byte boundaries, we use bit shifting 
+    // instead of the standard setAt() helper function.
+    this->data_[0] = static_cast<std::uint8_t>(p_int >> 8);
+    this->data_[1] = static_cast<std::uint8_t>(p_int & 0xFF);
+    this->data_[2] = static_cast<std::uint8_t>(v_int >> 4);
+    this->data_[3] = static_cast<std::uint8_t>(((v_int & 0xF) << 4) | (kp_int >> 8));
+    this->data_[4] = static_cast<std::uint8_t>(kp_int & 0xFF);
+    this->data_[5] = static_cast<std::uint8_t>(kd_int >> 4);
+    this->data_[6] = static_cast<std::uint8_t>(((kd_int & 0xF) << 4) | (t_int >> 8));
+    this->data_[7] = static_cast<std::uint8_t>(t_int & 0xFF);
+  }
+  // ---------------------
 }

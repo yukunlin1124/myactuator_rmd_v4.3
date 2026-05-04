@@ -17,22 +17,22 @@
 
 namespace myactuator_rmd {
 
-  class MotionControlResponse: public Message {
+  class SetMotionModeResponse: public Message {
     public:
       /**
        * \brief Constructor
        * \param[in] data The raw 8-byte response from the CAN bus
        */
-      MotionControlResponse(std::array<std::uint8_t, 8> const& data)
+      SetMotionModeResponse(std::array<std::uint8_t, 8> const& data)
       : Message{data} {
         return;
       }
 
-      MotionControlResponse() = delete;
-      MotionControlResponse(MotionControlResponse const&) = default;
-      MotionControlResponse& operator = (MotionControlResponse const&) = default;
-      MotionControlResponse(MotionControlResponse&&) = default;
-      MotionControlResponse& operator = (MotionControlResponse&&) = default;
+      SetMotionModeResponse() = delete;
+      SetMotionModeResponse(SetMotionModeResponse const&) = default;
+      SetMotionModeResponse& operator = (SetMotionModeResponse const&) = default;
+      SetMotionModeResponse(SetMotionModeResponse&&) = default;
+      SetMotionModeResponse& operator = (SetMotionModeResponse&&) = default;
 
       /**
        * \brief Get the actuator CAN ID echoed in the response (Byte 0)
@@ -71,14 +71,14 @@ namespace myactuator_rmd {
       /**
        * \brief Get the Feedforward Torque (t_ff) echoed by the motor
        * Parsed from Byte 4 (Low Nibble) and Byte 5
-       * \return Torque in Nm [-24.0, 24.0]
+       * \return Normalized Torque [-1.0, 1.0]
        */
       [[nodiscard]]
-      float getTorque() const noexcept {
+      float getNormalizedTorque() const noexcept {
         // Byte 4 (lower 4 bits) is the upper 4 bits of value
         // Byte 5 is the lower 8 bits of value
         std::uint16_t const raw_value = (static_cast<std::uint16_t>(data_[4] & 0x0F) << 8) | data_[5];
-        return uintToFloat(raw_value, -24.0f, 24.0f, 12);
+        return uintToFloat(raw_value, -1.0f, 1.0f, 12);
       }
 
     private:

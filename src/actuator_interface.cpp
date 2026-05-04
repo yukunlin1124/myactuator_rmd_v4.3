@@ -50,44 +50,6 @@ namespace myactuator_rmd {
     GetSingleControllerGainResponse const response {driver_.sendRecv(request, actuator_id_)};
     return response.getValue();
   }
-
-  float ActuatorInterface::setSingleGain(GainType const gain_type, float const value) {
-      SetSingleControllerGainRequest const request {gain_type, value};
-      SetSingleControllerGainResponse const response {driver_.sendRecv(request, actuator_id_)};
-      return response.getValue();
-  }
-
-  float ActuatorInterface::setSingleGainPersistently(GainType const gain_type, float const value) {
-      SetSingleControllerGainPersistentlyRequest const request {gain_type, value};
-      SetSingleControllerGainPersistentlyResponse const response {driver_.sendRecv(request, actuator_id_)};
-      return response.getValue();
-  }
-
-  std::uint32_t ActuatorInterface::functionControl(FunctionControlType const function_type, std::uint32_t const value) {
-    SetFunctionControlRequest const request {function_type, value};
-
-    if (function_type == FunctionControlType::SET_CANID) { 
-      driver_.send(request, actuator_id_);
-      return value;
-    }
-    SetFunctionControlResponse const response {driver_.sendRecv(request, actuator_id_)};
-    return response.getValue();
-  }
-
-  MotionControlStatus ActuatorInterface::motionControl(float const p_des, float const v_des, float const kp, float const kd, float const t_ff) {
-    MotionControlRequest const request {p_des, v_des, kp, kd, t_ff};
-    auto const response_data = driver_.sendRecv(request, 
-                                                actuator_id_, 
-                                                CanAddressOffset::request_motion_control, 
-                                                CanAddressOffset::response_motion_control);
-    MotionControlResponse const response {response_data};
-    return MotionControlStatus {
-      response.getEchoCanId(),   
-      response.getPosition(),    
-      response.getVelocity(),   
-      response.getTorque()
-    };
-  }
   // ---------------------
 
   Gains ActuatorInterface::getControllerGains() {
@@ -221,6 +183,19 @@ namespace myactuator_rmd {
     return response.getStatus();
   }
 
+  // --- edit ---
+  MotionControlStatus ActuatorInterface::sendMotionModeSetpoint(float const p_des, float const v_des, float const kp, float const kd, float const t_ff) {
+    SetMotionModeRequest const request {p_des, v_des, kp, kd, t_ff};
+    SetMotionModeResponse const response {driver_.sendRecv(request, actuator_id_, CanAddressOffset::request_motion_mode, CanAddressOffset::response_motion_mode)};
+    return MotionControlStatus {
+      response.getEchoCanId(),   
+      response.getPosition(),    
+      response.getVelocity(),   
+      response.getNormalizedTorque()
+    };
+  }
+  // ---------------------
+
   void ActuatorInterface::setAcceleration(std::uint32_t const acceleration, AccelerationType const mode) {
     SetAccelerationRequest const request {acceleration, mode};
     [[maybe_unused]] SetAccelerationResponse const response {driver_.sendRecv(request, actuator_id_)};
@@ -269,6 +244,20 @@ namespace myactuator_rmd {
     return;
   }
 
+  // --- edit ---
+  float ActuatorInterface::setSingleGain(GainType const gain_type, float const value) {
+      SetSingleControllerGainRequest const request {gain_type, value};
+      SetSingleControllerGainResponse const response {driver_.sendRecv(request, actuator_id_)};
+      return response.getValue();
+  }
+
+  float ActuatorInterface::setSingleGainPersistently(GainType const gain_type, float const value) {
+      SetSingleControllerGainPersistentlyRequest const request {gain_type, value};
+      SetSingleControllerGainPersistentlyResponse const response {driver_.sendRecv(request, actuator_id_)};
+      return response.getValue();
+  }
+  // ---------------------
+
   void ActuatorInterface::shutdownMotor() {
     ShutdownMotorRequest const request {};
     [[maybe_unused]] ShutdownMotorResponse const response {driver_.sendRecv(request, actuator_id_)};
@@ -281,4 +270,16 @@ namespace myactuator_rmd {
     return;
   }
 
+  // --- edit ---
+  std::uint32_t ActuatorInterface::functionControl(FunctionControlType const function_type, std::uint32_t const value) {
+    SetFunctionControlRequest const request {function_type, value};
+
+    if (function_type == FunctionControlType::SET_CANID) { 
+      driver_.send(request, actuator_id_);
+      return value;
+    }
+    SetFunctionControlResponse const response {driver_.sendRecv(request, actuator_id_)};
+    return response.getValue();
+  }
+  // ---------------------------
 }

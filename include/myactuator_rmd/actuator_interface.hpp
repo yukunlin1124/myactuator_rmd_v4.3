@@ -127,7 +127,7 @@ namespace myactuator_rmd {
       [[nodiscard]]
       std::uint32_t functionControl(FunctionControlType const function_type, std::uint32_t const value);
 
-      /**\fn motionControl
+      /**\fn sendMotionModeSetpoint
        * \brief Control the motor using the mixed motion control command (0x400)
        * \param[in] p_des Desired Position [-12.5, 12.5] rad
        * \param[in] v_des Desired Velocity [-45.0, 45.0] rad/s
@@ -136,7 +136,7 @@ namespace myactuator_rmd {
        * \param[in] t_ff Feedforward Torque [-24.0, 24.0] Nm
        * \return The echoed status (position, velocity, torque) from the motor
        */
-      MotionControlStatus motionControl(float const p_des, float const v_des, float const kp, float const kd, float const t_ff);
+      MotionControlStatus sendMotionModeSetpoint(float const p_des, float const v_des, float const kp, float const kd, float const t_ff);
       // ---------------------
 
       /**\fn getControlMode

@@ -143,7 +143,7 @@ namespace myactuator_rmd {
     for (auto const& id: actuator_ids_){
       can_receive_ids.emplace_back(getCanReceiveId(id));
       // --- edit ---
-      can_receive_ids.emplace_back(CanAddressOffset::response_motion_control + id);
+      can_receive_ids.emplace_back(CanAddressOffset::response_motion_mode + id);
       // -----------------------------------------------------------------------
     }
     setRecvFilter(can_receive_ids);

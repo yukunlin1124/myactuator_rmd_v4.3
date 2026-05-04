@@ -1,5 +1,11 @@
+import sys
+import os
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+build_dir = os.path.abspath(os.path.join(current_dir, '../build'))
+sys.path.insert(0, build_dir)
+
 import myactuator_rmd_py as rmd
-from myactuator_rmd_py.actuator_constants import X6_60
 import math
 import time
 
@@ -10,7 +16,7 @@ interface_name = "can2"
 motor_id = 1
 
 # Sine Wave Settings
-amplitude_deg = 45.0
+amplitude_deg = 90.0
 frequency_hz = 1
 
 
@@ -44,7 +50,8 @@ try:
         v_des = (amplitude_deg * dtr) * omega * math.cos(omega * t_now)
 
         # C. Send Command
-        status = actuator.motionControl(p_des, v_des, kp, kd, t_ff)
+        # status = actuator.sendMotionModeSetpoint(p_des, v_des, kp, kd, t_ff)
+        status = actuator.sendMotionModeSetpoint(0, 0, 10, 0, 0)
 
         # D. Print Status
         # Comparison: Target vs Actual
