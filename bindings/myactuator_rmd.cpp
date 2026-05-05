@@ -101,9 +101,9 @@ PYBIND11_MODULE(myactuator_rmd_py, m) {
     .def("sendPositionAbsoluteSetpoint", &myactuator_rmd::ActuatorInterface::sendPositionAbsoluteSetpoint)
     .def("sendTorqueSetpoint", &myactuator_rmd::ActuatorInterface::sendTorqueSetpoint)
     .def("sendVelocitySetpoint", &myactuator_rmd::ActuatorInterface::sendVelocitySetpoint)
-// --- edit ---
+    // --- edit ---
     .def("sendMotionModeSetpoint", &myactuator_rmd::ActuatorInterface::sendMotionModeSetpoint)
-// ---------------------
+    // ---------------------
     .def("setAcceleration", &myactuator_rmd::ActuatorInterface::setAcceleration)
     .def("setCanBaudRate", &myactuator_rmd::ActuatorInterface::setCanBaudRate)
     .def("setCanId", &myactuator_rmd::ActuatorInterface::setCanId)
@@ -115,6 +115,8 @@ PYBIND11_MODULE(myactuator_rmd_py, m) {
     .def("setSingleGain", &myactuator_rmd::ActuatorInterface::setSingleGain)
     .def("setSingleGainPersistently", &myactuator_rmd::ActuatorInterface::setSingleGainPersistently)
     .def("functionControl", &myactuator_rmd::ActuatorInterface::functionControl)
+    .def("shutdownAllMotors", &myactuator_rmd::ActuatorInterface::shutdownAllMotors)
+    .def("stopAllMotors", &myactuator_rmd::ActuatorInterface::stopAllMotors)
     // ---------------------
     .def("shutdownMotor", &myactuator_rmd::ActuatorInterface::shutdownMotor)
     .def("stopMotor", &myactuator_rmd::ActuatorInterface::stopMotor);

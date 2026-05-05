@@ -24,9 +24,12 @@ namespace myactuator_rmd {
       inline static constexpr std::uint32_t request {0x140};
       inline static constexpr std::uint32_t response {0x240};   
 
+      // Multi motor control
+      inline static constexpr std::uint32_t mult_motor_request {0x280};
+
       // Motion control messages
-      inline static constexpr std::uint32_t request_motion_mode {0x400};
-      inline static constexpr std::uint32_t response_motion_mode {0x500};
+      inline static constexpr std::uint32_t motion_mode_request {0x400};
+      inline static constexpr std::uint32_t motion_mode_response {0x500};
   };
 
 }

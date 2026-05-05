@@ -9,11 +9,10 @@ import myactuator_rmd_py as rmd
 import math
 import time
 
-dtr = math.pi / 180.0  # Degrees to Radians
-
-# Configuration
-interface_name = "can0"
-motor_id = 1
+# Initialization
+driver = rmd.CanDriver("can0")
+motor1_id = 1
+motor2_id = 2
 
 # Sine Wave Settings
 amplitude_deg = 90.0
@@ -23,8 +22,8 @@ frequency_hz = 1
 try:
     # 1. Setup
     driver = rmd.CanDriver(interface_name)
-    actuator = rmd.ActuatorInterface(driver, motor_id)
-    print(f"Connected to Motor {motor_id} on {interface_name}")
+    actuator1 = rmd.ActuatorInterface(driver, motor1_id)
+    actuator2 = rmd.ActuatorInterface(driver, motor2_id)
 
     # 2. Control Gains
     kp = 15  # Stiffness (Increase slightly for tracking, but start low)
@@ -50,20 +49,9 @@ try:
         v_des = (amplitude_deg * dtr) * omega * math.cos(omega * t_now)
 
         # C. Send Command
-        # status = actuator.sendMotionModeSetpoint(p_des, v_des, kp, kd, t_ff)
-        status = actuator.sendMotionModeSetpoint(0, 0, 10, 0, 0)
+        status1 = actuator1.sendMotionModeSetpoint(p_des, v_des, kp, kd, t_ff)
+        status2 = actuator2.sendMotionModeSetpoint(p_des, v_des, kp, kd, t_ff)
 
-        # D. Print Status
-        # Comparison: Target vs Actual
-        target_deg = p_des / dtr
-        target_vel = v_des / dtr
-        actual_deg = status.shaft_angle / dtr
-        actual_vel = status.shaft_speed / dtr
-        actual_torque = status.torque
-
-        print(
-            f"Target: {target_deg:6.2f} deg | Target Vel: {target_vel:6.2f} deg/s | Actual: {actual_deg:6.2f} deg | Actual Vel: {actual_vel:6.2f} deg/s | Torque: {actual_torque:6.2f} Nm"
-        )
 
         # Rate Limiting (100Hz)
         time.sleep(0.01)
@@ -73,7 +61,8 @@ except KeyboardInterrupt:
 
     # 4. Safe Shutdown
     try:
-        actuator.shutdownMotor()
+        # actuator1.stopAllMotors()
+        actuator1.shutdownAllMotors()
         print("Motor Stopped Safely.")
     except Exception as e:
         print(f"Failed to shutdown motor: {e}")

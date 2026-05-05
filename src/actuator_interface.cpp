@@ -186,7 +186,7 @@ namespace myactuator_rmd {
   // --- edit ---
   MotionControlStatus ActuatorInterface::sendMotionModeSetpoint(float const p_des, float const v_des, float const kp, float const kd, float const t_ff) {
     SetMotionModeRequest const request {p_des, v_des, kp, kd, t_ff};
-    SetMotionModeResponse const response {driver_.sendRecv(request, actuator_id_, CanAddressOffset::request_motion_mode, CanAddressOffset::response_motion_mode)};
+    SetMotionModeResponse const response {driver_.sendRecv(request, actuator_id_, CanAddressOffset::motion_mode_request, CanAddressOffset::motion_mode_response)};
     return MotionControlStatus {
       response.getEchoCanId(),   
       response.getPosition(),    
@@ -267,6 +267,18 @@ namespace myactuator_rmd {
   void ActuatorInterface::stopMotor() {
     StopMotorRequest const request {};
     [[maybe_unused]] StopMotorResponse const response {driver_.sendRecv(request, actuator_id_)};
+    return;
+  }
+
+  void ActuatorInterface::shutdownAllMotors() {
+    ShutdownMotorRequest const request {};
+    driver_.send(request, 0, CanAddressOffset::mult_motor_request);
+    return;
+  }
+
+  void ActuatorInterface::stopAllMotors() {
+    StopMotorRequest const request {};
+    driver_.send(request, 0, CanAddressOffset::mult_motor_request);
     return;
   }
 

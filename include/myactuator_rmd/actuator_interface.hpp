@@ -436,6 +436,18 @@ namespace myactuator_rmd {
       */
       void stopMotor();
 
+      /**\fn shutdownAllMotors
+       * \brief
+       *    Turn off all the motors
+      */
+      void shutdownAllMotors();
+
+      /**\fn stopAllMotor
+       * \brief
+       *    Stop all the motor if running closed loop command
+      */
+      void stopAllMotors();
+      
     protected:
       Driver& driver_;
       std::uint32_t actuator_id_;

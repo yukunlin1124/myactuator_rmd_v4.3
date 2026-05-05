@@ -52,7 +52,7 @@ namespace myactuator_rmd {
        * \brief
        * Overload: Writes data using a CUSTOM base offset
        * * \param[in] base_offset
-       * The custom CAN ID offset (e.g. 0x400)
+       * The custom CAN ID offset (e.g. 0x280)
       */
       virtual void send(Message const& msg, std::uint32_t const actuator_id, std::uint32_t const send_offset) = 0;
       // ---------------------------
