@@ -51,8 +51,9 @@ namespace myactuator_rmd {
      *    Class name of the corresponding Python bindings
     */
     template<typename T>
-    void declareActuator(pybind11::module& m, std::string const& class_name) {
-      pybind11::class_<T>(m, class_name.c_str())
+    pybind11::class_<T> declareActuator(pybind11::module& m, std::string const& class_name) {
+      pybind11::class_<T> actuator {m, class_name.c_str()};
+      actuator
         .def_readonly_static("reducer_ratio", &T::reducer_ratio)
         .def_readonly_static("rated_speed", &T::rated_speed)
         .def_readonly_static("rated_current", &T::rated_current)
@@ -60,7 +61,7 @@ namespace myactuator_rmd {
         .def_readonly_static("rated_torque", &T::rated_torque)
         .def_readonly_static("torque_constant", &T::torque_constant)
         .def_readonly_static("rotor_inertia", &T::rotor_inertia);
-      return;
+      return actuator;
     }
 
   }
@@ -258,10 +259,14 @@ PYBIND11_MODULE(myactuator_rmd_py, m) {
 
   auto m_actuator_constants = m.def_submodule("actuator_constants", "Submodule for actuator constants");
 // edit
-  myactuator_rmd::bindings::declareActuator<myactuator_rmd::X8_120>(m_actuator_constants,   "X8_120");
-  myactuator_rmd::bindings::declareActuator<myactuator_rmd::X6_60>(m_actuator_constants,    "X6_60");
-  myactuator_rmd::bindings::declareActuator<myactuator_rmd::X4_36>(m_actuator_constants,    "X4_36");
-  myactuator_rmd::bindings::declareActuator<myactuator_rmd::X4_10>(m_actuator_constants,    "X4_10");
+  myactuator_rmd::bindings::declareActuator<myactuator_rmd::X8_120>(m_actuator_constants,   "X8_120")
+    .def_readonly_static("max_torque", &myactuator_rmd::X8_120::max_torque);
+  myactuator_rmd::bindings::declareActuator<myactuator_rmd::X6_60>(m_actuator_constants,    "X6_60")
+    .def_readonly_static("max_torque", &myactuator_rmd::X6_60::max_torque);
+  myactuator_rmd::bindings::declareActuator<myactuator_rmd::X4_36>(m_actuator_constants,    "X4_36")
+    .def_readonly_static("max_torque", &myactuator_rmd::X4_36::max_torque);
+  myactuator_rmd::bindings::declareActuator<myactuator_rmd::X4_10>(m_actuator_constants,    "X4_10")
+    .def_readonly_static("max_torque", &myactuator_rmd::X4_10::max_torque);
 //
   myactuator_rmd::bindings::declareActuator<myactuator_rmd::X4V2>(m_actuator_constants,     "X4V2");
   myactuator_rmd::bindings::declareActuator<myactuator_rmd::X4V3>(m_actuator_constants,     "X4V3");

@@ -103,6 +103,7 @@ namespace myactuator_rmd {
       static constexpr float rated_current {11}; // in A
       static constexpr float rated_power {100}; // in W
       static constexpr float rated_torque {4}; // in Nm
+      static constexpr float max_torque {8}; // in Nm
       static constexpr float torque_constant {0.4675}; // in Nm/A
       static constexpr float rotor_inertia {250}; // in gcm2
   };
@@ -120,6 +121,7 @@ namespace myactuator_rmd {
       static constexpr float rated_current {8.625}; // in A
       static constexpr float rated_power {100}; // in W
       static constexpr float rated_torque {10.5}; // in Nm
+      static constexpr float max_torque {34.5}; // in Nm
       static constexpr float torque_constant {1.2}; // in Nm/A
       static constexpr float rotor_inertia {300}; // in gcm2
   };
@@ -249,6 +251,7 @@ namespace myactuator_rmd {
       static constexpr float rated_current {13.4}; // in A
       static constexpr float rated_power {320}; // in W
       static constexpr float rated_torque {20}; // in Nm
+      static constexpr float max_torque {60}; // in Nm
       static constexpr float torque_constant {1.5}; // in Nm/A
       static constexpr float rotor_inertia {660}; // in gcm2
   };
@@ -431,6 +434,7 @@ namespace myactuator_rmd {
       static constexpr float rated_current {24.88}; // in A
       static constexpr float rated_power {574}; // in W
       static constexpr float rated_torque {43}; // in Nm
+      static constexpr float max_torque {127}; // in Nm
       static constexpr float torque_constant {2.0}; // in Nm/A
       static constexpr float rotor_inertia {1500}; // in gcm2
   };
